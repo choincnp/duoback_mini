@@ -13,11 +13,23 @@
       EndPoint : /search
       Method : GET
 - [ ] (FE) 백엔드에서 전달해준 데이터를 파싱한다.
+
   - [ ] 제목
   - [ ] 썸네일
   - [ ] 재생시간
   - [ ] 조회수
   - [ ] url
+
+  ```ts
+  interface dataType = {
+    title: string;
+    thumbnail: string;
+    playTime: number;
+    url: string;
+  }
+
+  let data:dataType;
+  ```
 
 ## 2. 검색 결과
 
