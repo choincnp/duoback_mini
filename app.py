@@ -34,14 +34,27 @@ def search_get():
    return jsonify({ 'data': str(resData)})
    
 
-#Auth
-@app.route('/auth/login')
-def logIn():
+#####Auth#####
+
+#LogIn
+@app.route('/auth/login', methods=['GET'])
+def getlogIn():
    return render_template('auth/login.html')
 
-@app.route('/auth/signIn')
-def signIn():
+@app.route('/auth/login', methods=['POST'])
+def logIn():
+  #코드 구현하시면 됩니다.
+   return jsonify({ 'data': 'test'})
+
+#SignIn
+@app.route('/auth/signIn', methods=['GET'])
+def getSignIn():
    return render_template('auth/signIn.html')
+
+@app.route('/auth/signIn', methods=['POST'])
+def signIn():
+  #코드 구현하시면 됩니다.
+   return jsonify({ 'data': 'test'})
 
 
 if __name__ == '__main__':

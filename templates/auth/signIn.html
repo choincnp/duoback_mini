@@ -16,6 +16,23 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const signIn = () => {
+        console.log('st');
+        const inputId = $('.signIn-id-input').val();
+        const inputPw = $('.signIn-pw-input').val();
+        $.ajax({
+          type: 'POST',
+          url: '/auth/signIn',
+          data: { inputId: inputId, inputPw: inputPw },
+          success: function (response) {
+            console.log('fin');
+            window.location.href = '/auth/login';
+            console.log(response);
+          },
+        });
+      };
+    </script>
     <link rel="stylesheet" href="../../static/css/index.css" />
     <title>Sign In</title>
   </head>
@@ -26,8 +43,8 @@
         <form class="login-form">
           <div class="form-floating mb-3">
             <input
-              type="email"
-              class="form-control input-box"
+              type="text"
+              class="form-control input-box signIn-id-input"
               id="floatingInput"
               placeholder="name@example.com"
             />
@@ -36,7 +53,7 @@
           <div class="form-floating">
             <input
               type="password"
-              class="form-control input-box"
+              class="form-control input-box signIn-pw-input"
               id="floatingPassword"
               placeholder="Password"
             />
@@ -44,7 +61,7 @@
           </div>
         </form>
         <div class="button-box">
-          <div class="sign-submit-btn">Submit</div>
+          <div class="sign-submit-btn" onClick="signIn()">Submit</div>
         </div>
       </div>
     </div>

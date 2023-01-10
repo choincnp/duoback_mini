@@ -17,15 +17,15 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      const getLogin = () => {
+      const login = () => {
         const inputId = $('.login-id-input').val();
         const inputPw = $('.login-pw-input').val();
         $.ajax({
-          type: GET,
-          url: 'auth/login',
+          type: 'POST',
+          url: '/auth/login',
           data: { inputId: inputId, inputPw: inputPw },
           success: function (response) {
-            console.log(response); //아침에 승현님이랑 같이 해야함.
+            console.log(response);
           },
         });
       };
@@ -58,8 +58,8 @@
           </div>
         </form>
         <div class="button-box">
-          <div class="login-btn">Sign In</div>
-          <div class="login-btn">Log In</div>
+          <a href="./signIn" class="login-btn">Sign In</a>
+          <div class="login-btn" onClick="login()">Log In</div>
         </div>
       </div>
     </div>
