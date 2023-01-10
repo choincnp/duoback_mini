@@ -24,7 +24,7 @@
 .input-box {
   opacity: 0.6;
   border-radius: 5px;
-  padding: 5px;
+  width: 300px;
   outline: none;
   transition: ease-in-out 0.15s;
 }
@@ -51,15 +51,14 @@
 }
 
 .login-btn {
-  display: flex;
-  align-items: center;
   padding: 10px 20px;
+  text-align: center;
   border-radius: 3px;
   font-weight: 600;
-  transition: 0.15s ease-in-out;
-  margin: 7px;
   background: #111;
   color: white;
+  transition: 0.15s ease-in-out;
+  width: 145px;
 }
 
 .login-btn:hover {
@@ -70,5 +69,8 @@
 
 .button-box {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: space-between;
+  width: 300px;
+  display: flex;
 }
