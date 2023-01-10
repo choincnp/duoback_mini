@@ -1,4 +1,4 @@
-const musicDataPaser = (HTMLData) => {
+const musicDataParser = (HTMLData) => {
   const regex = /(var ytInitialData)(.*?)};/;
   const parsedRegexHTML = regex.exec(HTMLData);
   const CSRData = parsedRegexHTML[0];

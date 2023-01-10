@@ -26,7 +26,6 @@ app = Flask(__name__)
 def home():
    return render_template('index.html')
 
-
 @app.route('/search', methods=['GET'])
 def search_get():
    query = request.args.get('query')
@@ -34,6 +33,10 @@ def search_get():
    resData = list(HTMLData)[1];
    return jsonify({ 'data': str(resData)})
    
+@app.route('/auth/login')
+def login():
+   return render_template('auth/login.html')
+
 
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5000,debug=True)
