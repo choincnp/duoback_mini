@@ -16,6 +16,20 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const getLogin = () => {
+        const inputId = $('.login-id-input').val();
+        const inputPw = $('.login-pw-input').val();
+        $.ajax({
+          type: GET,
+          url: 'auth/login',
+          data: { inputId: inputId, inputPw: inputPw },
+          success: function (response) {
+            console.log(response); //아침에 승현님이랑 같이 해야함.
+          },
+        });
+      };
+    </script>
     <link rel="stylesheet" href="../../static/css/index.css" />
     <title>Login</title>
   </head>
@@ -26,8 +40,8 @@
         <form class="login-form">
           <div class="form-floating mb-3">
             <input
-              type="email"
-              class="form-control input-box"
+              type="text"
+              class="form-control input-box login-id-input"
               id="floatingInput"
               placeholder="name@example.com"
             />
@@ -36,7 +50,7 @@
           <div class="form-floating">
             <input
               type="password"
-              class="form-control input-box"
+              class="form-control input-box login-pw-input"
               id="floatingPassword"
               placeholder="Password"
             />
