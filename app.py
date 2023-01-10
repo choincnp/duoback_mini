@@ -13,17 +13,12 @@ REQ = {
 #Modules
 def getHTMLData(query):
     data = requests.get(f'https://www.youtube.com/results?search_query={query}', headers={REQ['KEY']: REQ['VALUE']})
-    print(data)
     soup = BeautifulSoup(data.text, 'html.parser')
     return soup
 
 def parseData():
   result = [];
 
-#
-#
-#
-#
 #Server
 app = Flask(__name__)
 
