@@ -4,20 +4,9 @@
     <meta charset="UTF-8" />
     <title>Title</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../static/js/dataTrimmer.js"></script>
+    <script src="../static/js/musicDataParser.js"></script>
     <script>
-      /*
-        const getReq = () => {
-          $.ajax({
-            type: 'GET', //Method
-            url: '/test', //URL
-            data: {},
-            success: function (response) {
-              console.log(response);
-            },
-          });
-        };
-      */
-
       const getMusic = () => {
         const query = $('.searchInput').val();
         $.ajax({
@@ -51,6 +40,4 @@
     <input class="searchInput" placeholder="Search To play" type="text" />
     <input onclick="getMusic()" value="search" type="button" value="button" />
   </body>
-  <script src="../static/js/dataTrimmer.js"></script>
-  <script src="../static/js/musicDataParser.js"></script>
 </html>
