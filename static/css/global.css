@@ -1,0 +1,9 @@
+body {
+  background: #111;
+  color: white;
+  overflow: hidden;
+}
+
+*:focus {
+  outline: none;
+}
