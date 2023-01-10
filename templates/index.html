@@ -5,27 +5,18 @@
     <title>Title</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+      /*
       const getReq = () => {
         $.ajax({
-          type: 'GET',
-          url: '/test?title_give=봄날은간다',
+          type: 'GET', //Method
+          url: '/test', //URL
           data: {},
           success: function (response) {
             console.log(response);
           },
         });
       };
-
-      const postReq = () => {
-        $.ajax({
-          type: 'POST',
-          url: '/test',
-          data: { title_give: '봄날은간다' },
-          success: function (response) {
-            console.log(response.msg);
-          },
-        });
-      };
+      */
 
       const getMusic = () => {
         const query = $('.searchInput').val();
@@ -34,11 +25,14 @@
           url: '/search',
           data: { query: query },
           success: function (response) {
-            const { id, msg } = response;
-            console.log(`${id}를 받아옴.`);
-            console.log(`${id}를 생성합니다.`);
-            const newVideo = createVideo(id);
-            $('.video-container').append(newVideo);
+            const { data: HTMLData } = response;
+            const regex = /(var ytInitialData)(.*?)};/;
+            const parsedRegexHTML = regex.exec(HTMLData);
+            const CSRData = parsedRegexHTML[0];
+            const objectData = JSON.parse(
+              CSRData.substring(20, CSRData.length - 1)
+            );
+            console.log(objectData);
           },
         });
       };
@@ -54,14 +48,13 @@
     <iframe
       height="300"
       src="https://www.youtube.com/embed/w9JE8b-84UI"
-      title="탄범준 - 고백 (Live)"
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowfullscreen
     ></iframe>
     <div class="video-container"></div>
     <input class="searchInput" placeholder="Search To play" type="text" />
-    <input onclick="postReq()" type="button" value="submit" />
     <input onclick="getMusic()" value="search" type="button" value="button" />
   </body>
+  <script src="../static/js/dataTrimmer.js"></script>
 </html>
