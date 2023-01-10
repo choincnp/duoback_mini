@@ -1,7 +1,3 @@
-# duoback_mini
-
----
-
 # 기능명세서
 
 ---
@@ -22,10 +18,12 @@
 
   ```ts
   interface dataType = {
-    title: string;
+    channelUrl: string;
+    duration: string;
+    id: string;
+    owner: string;
     thumbnail: string;
-    playTime: number;
-    url: string;
+    title: string;
   }
 
   let data:dataType;
