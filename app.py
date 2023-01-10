@@ -33,9 +33,15 @@ def search_get():
    resData = list(HTMLData)[1];
    return jsonify({ 'data': str(resData)})
    
+
+#Auth
 @app.route('/auth/login')
-def login():
+def logIn():
    return render_template('auth/login.html')
+
+@app.route('/auth/signIn')
+def signIn():
+   return render_template('auth/signIn.html')
 
 
 if __name__ == '__main__':

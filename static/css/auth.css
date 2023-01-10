@@ -74,3 +74,21 @@
   width: 300px;
   display: flex;
 }
+
+/* Sign in */
+.sign-submit-btn {
+  width: 100%;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: 3px;
+  font-weight: 600;
+  background: #111;
+  color: white;
+  transition: 0.15s ease-in-out;
+}
+
+.sign-submit-btn:hover {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.8);
+  color: #111;
+}
