@@ -6,16 +6,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
       /*
-      const getReq = () => {
-        $.ajax({
-          type: 'GET', //Method
-          url: '/test', //URL
-          data: {},
-          success: function (response) {
-            console.log(response);
-          },
-        });
-      };
+        const getReq = () => {
+          $.ajax({
+            type: 'GET', //Method
+            url: '/test', //URL
+            data: {},
+            success: function (response) {
+              console.log(response);
+            },
+          });
+        };
       */
 
       const getMusic = () => {
@@ -26,13 +26,8 @@
           data: { query: query },
           success: function (response) {
             const { data: HTMLData } = response;
-            const regex = /(var ytInitialData)(.*?)};/;
-            const parsedRegexHTML = regex.exec(HTMLData);
-            const CSRData = parsedRegexHTML[0];
-            const objectData = JSON.parse(
-              CSRData.substring(20, CSRData.length - 1)
-            );
-            console.log(objectData);
+            const musicDatas = musicDataParser(HTMLData);
+            console.log(musicDatas);
           },
         });
       };
@@ -57,4 +52,5 @@
     <input onclick="getMusic()" value="search" type="button" value="button" />
   </body>
   <script src="../static/js/dataTrimmer.js"></script>
+  <script src="../static/js/musicDataParser.js"></script>
 </html>
