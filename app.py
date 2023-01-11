@@ -85,7 +85,6 @@ def list_post():
 
     # 몽고db에서 플레이리스트 꺼내기
     allPlaylist = db.users.find_one({'id':sessionId})['playlist']
-
     return jsonify({"playlistData": allPlaylist})
 
 @app.route('/playlist', methods=['GET'])

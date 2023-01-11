@@ -9,6 +9,17 @@
     <script src="../static/js/musicDataParser.js"></script>
 
     <script>
+      const logout = () => {
+        $.ajax({
+          type: "GET",
+          url: "/logout",
+          data: {},
+          success: function (response) {
+            alert(response['message'])
+            window.location.href = '/';
+          }
+        })
+      }
       const getplaylist = () => {
         $('.temp').empty();
         $.ajax({
@@ -66,8 +77,6 @@
           },
           success: function (response) {
             const { playlistData } = response;
-            console.log(typeof playlistData, playlistData);
-
             for (let i of playlistData) {
               const list = createListComponent(i);
               $('.user-playlist').append(list);
@@ -75,7 +84,7 @@
             /*
             1. res에서 BE가 던져준 새 플리 변수 저장.
             2. 플리 비우기
-            3. 새로 
+            3. 새로
             */
           },
         });
@@ -154,6 +163,7 @@
               d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
             />
           </svg>
+          <button onclick="logout()">logout</button>
         </div>
         <div class="search_result-container"></div>
       </div>
