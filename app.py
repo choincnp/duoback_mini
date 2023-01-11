@@ -44,31 +44,31 @@ def search_get():
    return jsonify({ 'data': str(resData)})
 
 #PlayList
-@app.route('/addList', methods=['POST'])
-def add_list():
+@app.route('/playlist', methods=['POST'])
+def list_post():
     # list data
     sessionId = 'test1'
-    title = request.args.get('title_give')
-    thumbnail = request.args.get('thumbnail_give')
-    owner = request.args.get('owner_give')
-    id = request.args.get('id_give')
-    duration = request.args.get('thumbnail_give')
+    title = request.args.get('title')
+    thumbnail = request.args.get('thumbnail')
+    owner = request.args.get('owner')
+    musicId = request.args.get('id')
+    duration = request.args.get('duration')
     musicInfo = {
         'title' :title,
         'thumbnail' : thumbnail,
         'owner' : owner,
-        'id' : id,
+        'musicId' : musicId,
         'duration' : duration
     }
-    #find
+    find
     playlist = db.users.find_one({'id': sessionId})['list']
     playlist.append(musicInfo)
     newPlaylist = playlist
     db.users.update_one({'id': sessionId}, {'$set': {'list': newPlaylist}})
-    return jsonify({'msg' : '플리에 저장됨'})
+    return jsonify({"msg": '완료'})
 
-@app.route('/addList', methods=['GET'])
-def show_list():
+@app.route('/playlist', methods=['GET'])
+def list_get():
     #DB에서 정보를 가져옴
     playlist = db.users.find_one({'id': 'test1'})['list']
     return jsonify({'playlist' : playlist})
@@ -133,8 +133,6 @@ def signIn():
         msg = "회원가입 완료!"
         error = False
         db.users.insert_one({'id': inputId, 'pw': inputPw, 'playlist': []})
-
-
     return jsonify({'message': msg, 'error': error})
 
 if __name__ == '__main__':

@@ -9,41 +9,22 @@
     <script src="../static/js/musicDataParser.js"></script>
 
     <script>
-      const getplaylist =() => {
-        $('.temp').empty()
+      const getplaylist = () => {
+        $('.temp').empty();
         $.ajax({
-          type:'GET',
-          url:'/',
-          data:{},
-          success:function(response){
-            for (let i=0; i<response.length; i++){
-              const thumbnail = response[i]['thumbnail']
-              const title = response[i]['title']
-              const id = response[i]['id']
-              const owner = response[i]['owner']
-              const duration = response[i]['duration']
-              const temp_html = `
-              `
-              $('.music').append(temp_html)
+          type: 'GET',
+          url: '/playlist',
+          data: {},
+          success: function (response) {
+            for (let i of response) {
+              const { thumbnail, channelUrl, duration, id, owner } = musicData;
+              const component = `${title}`;
+              $('.user-playlist').append(component);
             }
-          }
+          },
         });
       };
-      const addplaylist =() => {
-        const title = $('.temp')['title']
-        const thumbnail = $('.temp')['thumbnails']
-        const id = $('.temp')['id']
-        const owner = $('.temp')['owner']
-        const duration = $('.temp')['duration']
-        $.ajax({
-              type:'POST',
-              url:'/addList',
-              data:{'title_give' : title, 'thumbnail_give' : thumbnail, 'id_give' : id, 'owner_give':owner, 'duration_give':duration },
-              success:function(response){
-                alert(response['msg']);
-              }
-          });
-      };
+
       const getMusic = () => {
         const query = $('.searchInput').val();
         $.ajax({
@@ -55,20 +36,50 @@
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
             for (let i of musicDatas) {
-              const { title, thumbnails, channelUrl, duration, id, owner } = i;
               const musicComponent = createMusicComponent(i);
               $('.search_result-container').append(musicComponent);
             }
           },
         });
       };
+
+      const addMusic = (props) => {
+        const [id, thumbnail, title, owner, duration] = props.split('|?|');
+        const musicData = {
+          id: id,
+          thumbnail: thumbnail,
+          title: title,
+          owner: owner,
+          duration: duration,
+        };
+
+        $.ajax({
+          type: 'POST',
+          url: '/playlist',
+          data: { musicData: musicData },
+          success: function (response) {
+            /*
+            1. res에서 BE가 던져준 새 플리 변수 저장.
+            2. 플리 비우기
+            3. 새로 
+            */
+          },
+        });
+      };
+
       const createMusicComponent = (musicData) => {
-        const { title, thumbnail, channelUrl, duration, id, owner } = musicData;
+        const { thumbnail, channelUrl, duration, id, owner } = musicData;
+        let { title } = musicData;
+        title = title
+          .replaceAll("'", '')
+          .replaceAll('"', '')
+          .replaceAll('`', '');
+
         return `
-            <div class="music-card">
-              <img src="${thumbnail}" class="music-img"/>
-              <div class="music-info">
-                <div class="music-title">${title}</div>
+            <div class='music-card' onclick="addMusic('${id}|?|${thumbnail}|?|${title}|?|${owner}|?|${duration}')">
+              <img src='${thumbnail}' class='music-img'/>
+              <div class='music-info'>
+                <div class='music-title'>${title}</div>
               </div>
             </div>
         `;
@@ -76,7 +87,7 @@
 
       const createVideo = (id) => {
         return `
-                <iframe width="500px" height="350px" autoplay loop src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width='500px' height='350px' autoplay loop src='https://www.youtube.com/embed/${id}' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>
             `;
       };
 
@@ -117,7 +128,6 @@
             />
           </svg>
         </div>
-
         <div class="search_result-container"></div>
       </div>
     </div>
