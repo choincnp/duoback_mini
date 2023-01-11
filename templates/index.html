@@ -52,15 +52,12 @@
           owner: owner,
           duration: duration,
         };
-        console.log(0);
 
         $.ajax({
           type: 'POST',
           url: '/playlist',
           data: { musicData: musicData },
           success: function (response) {
-            console.log(1);
-            console.log(response);
             /*
             1. res에서 BE가 던져준 새 플리 변수 저장.
             2. 플리 비우기
