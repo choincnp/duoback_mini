@@ -26,9 +26,9 @@
           url: '/auth/signIn',
           data: { inputId: inputId, inputPw: inputPw },
           success: function (response) {
-            console.log('fin');
-            window.location.href = '/auth/login';
-            console.log(response);
+            const { error, message } = response;
+            if (!error) window.location.href = '/auth/login';
+            alert(message);
           },
         });
       };
