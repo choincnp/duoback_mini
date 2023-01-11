@@ -2,11 +2,14 @@ from flask import Flask, session, render_template, request, jsonify
 from bs4 import BeautifulSoup
 import requests
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://test:sparta@Cluster0.elmvpjv.mongodb.net/?retryWrites=true&w=majority')
+import certifi
+ca = certifi.where()
+client = MongoClient('mongodb+srv://test:sparta@cluster0.1sichzk.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
 db = client.dbsparta
 app = Flask(__name__)
-app.secret_key="My_key"
+app.secret_key = "Mykey"
 
+sessionId = "kkk12"
 
 # API
 # CONSTANT 
@@ -30,11 +33,21 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # if 'id' in session:
-    #     sessionId = session['id']
+    # session.pop('id', None)
+    if 'id' in session:
+        # sessionId = session['id']
+        # print(session['id'])
+        global sessionId
+        print(sessionId)
         return render_template('index.html')
-    # else:
-    #     return render_template('/auth/login.html')
+    else:
+        print(sessionId)
+        return render_template('/auth/login.html')
+# session 오류 해결하려고 입력
+if __name__ == "__main__":
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+
 
 @app.route('/search', methods=['GET'])
 def search_get():
@@ -47,12 +60,12 @@ def search_get():
 @app.route('/playlist', methods=['POST'])
 def list_post():
     # list data
-    sessionId = 'test1'
-    title = request.args.get('title')
-    thumbnail = request.args.get('thumbnail')
-    owner = request.args.get('owner')
-    musicId = request.args.get('id')
-    duration = request.args.get('duration')
+    global sessionId
+    title = request.form['title']
+    thumbnail = request.form['thumbnail']
+    owner = request.form['owner']
+    musicId = request.form['id']
+    duration = request.form['duration']
     musicInfo = {
         'title' :title,
         'thumbnail' : thumbnail,
@@ -60,12 +73,15 @@ def list_post():
         'musicId' : musicId,
         'duration' : duration
     }
-    find
-    playlist = db.users.find_one({'id': sessionId})['list']
-    playlist.append(musicInfo)
-    newPlaylist = playlist
-    db.users.update_one({'id': sessionId}, {'$set': {'list': newPlaylist}})
-    return jsonify({"msg": '완료'})
+    # 선택한 플레이리스트 몽고db에 저장
+    user = db.users.find_one({'id': sessionId},{"_id": False})['playlist']
+    user.append(musicInfo)
+    db.users.update_one({'id': sessionId}, {'$set': {'playlist': user}})
+
+    # 몽고db에서 플레이리스트 꺼내기
+    allPlaylist = db.users.find_one({'id':sessionId})['playlist']
+
+    return jsonify({"msg": allPlaylist})
 
 @app.route('/playlist', methods=['GET'])
 def list_get():
@@ -106,8 +122,11 @@ def logIn():
     else:
         msg = "로그인 성공"
         error = False  # 로그인 가능
-        playlist = db.users.find_one({'id': user_id})['playlist']
-    return jsonify({'message': msg, 'error': error, 'playlist': playlist})
+        session['id'] = user_id
+        global sessionId
+        sessionId = user_id
+
+    return jsonify({'message': msg, 'error': error})
 
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
@@ -133,7 +152,10 @@ def signIn():
         msg = "회원가입 완료!"
         error = False
         db.users.insert_one({'id': inputId, 'pw': inputPw, 'playlist': []})
+
+
     return jsonify({'message': msg, 'error': error})
 
 if __name__ == '__main__':
-   app.run('0.0.0.0',port=5000,debug=True)
+   app.run('0.0.0.0',port=5003,debug=True)
+
