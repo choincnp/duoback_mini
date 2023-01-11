@@ -27,17 +27,33 @@ def parseData():
 #Server
 app = Flask(__name__)
 
+def checkSession():
+  if session['id']:
+    global sessionId
+    sessionId = session['id']
+    return
+  return render_template('/auth/login.html')
+
 
 @app.route('/')
 def home():
-    # if 'id' in session:
-    #     sessionId = session['id']
+    if 'id' in session:
+        # sessionId = session['id']
+        # print(session['id'])
+        global sessionId
         return render_template('index.html')
-    # else:
-    #     return render_template('/auth/login.html')
+    else:
+        return render_template('/auth/login.html')
+
+# session 오류 해결하려고 입력
+if __name__ == "__main__":
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+
 
 @app.route('/search', methods=['GET'])
 def search_get():
+   checkSession()
    query = request.args.get('query')
    HTMLData = getHTMLData(query)
    resData = list(HTMLData)[1];
@@ -46,6 +62,7 @@ def search_get():
 #PlayList
 @app.route('/playlist', methods=['POST'])
 def list_post():
+    checkSession()
     # list data
     sessionId = 'test1'
     title = request.args.get('title')
@@ -60,33 +77,33 @@ def list_post():
         'musicId' : musicId,
         'duration' : duration
     }
-    find
-    playlist = db.users.find_one({'id': sessionId})['list']
-    playlist.append(musicInfo)
-    newPlaylist = playlist
-    db.users.update_one({'id': sessionId}, {'$set': {'list': newPlaylist}})
-    return jsonify({"msg": '완료'})
+    # 선택한 플레이리스트 몽고db에 저장
+    user = db.users.find_one({'id': sessionId},{"_id": False})['playlist']
+    user.append(musicInfo)
+    db.users.update_one({'id': sessionId}, {'$set': {'playlist': user}})
+
+    # 몽고db에서 플레이리스트 꺼내기
+    allPlaylist = db.users.find_one({'id':sessionId})['playlist']
+    return jsonify({"playlistData": allPlaylist})
 
 @app.route('/playlist', methods=['GET'])
 def list_get():
+    checkSession()
     #DB에서 정보를 가져옴
     playlist = db.users.find_one({'id': 'test1'})['list']
     return jsonify({'playlist' : playlist})
-
-#Auth
-@app.route('/auth/login')
-def login():
-   return render_template('auth/login.html')
 
 #####Auth#####
 
 #LogIn
 @app.route('/auth/login', methods=['GET'])
 def getlogIn():
+   checkSession()
    return render_template('auth/login.html')
 
 @app.route('/auth/login', methods=['POST'])
 def logIn():
+    checkSession()
     user_id = request.form['inputId']
     user_pw = request.form['inputPw']
     error = True
@@ -106,16 +123,29 @@ def logIn():
     else:
         msg = "로그인 성공"
         error = False  # 로그인 가능
-        playlist = db.users.find_one({'id': user_id})['playlist']
-    return jsonify({'message': msg, 'error': error, 'playlist': playlist})
+
+        session['id'] = user_id
+        global sessionId
+        sessionId = user_id
+
+    return jsonify({'message': msg, 'error': error})
+
+#Logout
+@app.route('/logout', methods=['GET'])
+def logout():
+    checkSession()
+    session.pop('id', None)
+    return jsonify({'message': "로그아웃."})
 
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
 def getSignIn():
+   checkSession()
    return render_template('auth/signIn.html')
 
 @app.route('/auth/signIn', methods=['POST'])
 def signIn():
+    checkSession()
     inputId = request.form['inputId']
     inputPw = request.form['inputPw']
     error = True

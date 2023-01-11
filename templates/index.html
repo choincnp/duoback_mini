@@ -58,6 +58,13 @@
           url: '/playlist',
           data: { musicData: musicData },
           success: function (response) {
+            const { playlistData } = response;
+            console.log(typeof playlistData, playlistData);
+
+            for (let i of playlistData) {
+              const list = createListComponent(i);
+              $('.user-playlist').append(list);
+            }
             /*
             1. res에서 BE가 던져준 새 플리 변수 저장.
             2. 플리 비우기
@@ -65,6 +72,19 @@
             */
           },
         });
+      };
+
+      const createListComponent = (props) => {
+        const { title, thumbnail, duration, musicId: id, owner } = props;
+
+        return `
+            <div class='list-card'">
+              <img src='${thumbnail}' class='list-img'/>
+              <div class='list-info'>
+                <div class='list-title'>${title}</div>
+              </div>
+            </div>
+        `;
       };
 
       const createMusicComponent = (musicData) => {
