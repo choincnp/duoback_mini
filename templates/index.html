@@ -14,10 +14,22 @@
           success: function (response) {
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
-            console.log(musicDatas);
+            for (let i = 0; i < 5 ; i++){
+            let thumbnails = musicDatas[i].thumbnail
+            let title = musicDatas[i].title
+            let temp_html = `<div id = 'temp'><img src = "${thumbnails}" alt = '검색어에 대한 사진 설명입니다.'>
+                             <button style="border-radius: 7px;" onclick = 'musicPost'> Post music data </button>
+                                  <button onclick="clean()">clean</button>
+                                <h5 style="color: midnightblue">${title}</h5></div>`
+            $('.video-container').append(temp_html)
+            }
           },
         });
       };
+
+      function clean() {
+          $('.video-container').empty()
+      }
 
       const createVideo = (id) => {
         return `
