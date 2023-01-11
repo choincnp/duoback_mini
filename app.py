@@ -7,10 +7,10 @@ db = client.dbsparta
 app = Flask(__name__)
 app.secret_key = "Mykey"
 
-sessionId = "kkk12"
+sessionId = 0
 
 # API
-# CONSTANT 
+# CONSTANT
 REQ = {
     'KEY': 'User-Agent',
     'VALUE': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
@@ -31,7 +31,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # session.pop('id', None)
     if 'id' in session:
         # sessionId = session['id']
         # print(session['id'])
@@ -41,6 +40,7 @@ def home():
     else:
         print(sessionId)
         return render_template('/auth/login.html')
+
 # session 오류 해결하려고 입력
 if __name__ == "__main__":
     app.secret_key = 'super secret key'
@@ -125,6 +125,12 @@ def logIn():
         sessionId = user_id
 
     return jsonify({'message': msg, 'error': error})
+
+#Logout
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('id', None)
+    return jsonify({'message': "로그아웃."})
 
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])

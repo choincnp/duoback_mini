@@ -26,8 +26,8 @@
           data: { inputId: inputId, inputPw: inputPw },
           success: function (response) {
             const { error, message } = response;
-            if (!error) window.location.href = '/auth/login';
-            alert(message);
+            // if (!error) window.location.href = '/auth/login';
+            // alert(message);
             if (error) {
               // 오류
               alert('에러. \n이유 : ' + message);
