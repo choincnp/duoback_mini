@@ -1,6 +1,13 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, session, render_template, request, jsonify
 from bs4 import BeautifulSoup
 import requests
+from pymongo import MongoClient
+client = MongoClient('mongodb+srv://test:sparta@Cluster0.elmvpjv.mongodb.net/?retryWrites=true&w=majority')
+db = client.dbsparta
+app = Flask(__name__)
+app.secret_key="My_key"
+
+
 
 # API
 # CONSTANT 
@@ -21,9 +28,14 @@ def parseData():
 #Server
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
-   return render_template('index.html')
+    # if 'id' in session:
+    #     sessionId = session['id']
+        return render_template('index.html')
+    # else:
+    #     return render_template('/auth/login.html')
 
 @app.route('/search', methods=['GET'])
 def search_get():
@@ -31,7 +43,29 @@ def search_get():
    HTMLData = getHTMLData(query)
    resData = list(HTMLData)[1];
    return jsonify({ 'data': str(resData)})
-   
+
+#PlayList
+@app.route('/addList', methods=['POST'])
+def add_list():
+    # list data
+    sessionId = 'test'
+    count = list(db.users.find({'id': sessionId}, {'_id': False}))
+    num = len(count) + 1
+    title = request.args.get('title_give')
+    thumbnail = request.args.get('thumbnail_give')
+    owner = '나도모름'
+    id = 'w9JE8b-84UI'
+    duration = '1분55초'
+    playlist = [num, title, thumbnail, owner, id, duration]
+    #update into database
+    db.users.update_one({'id': sessionId}, {'$set': {'list': playlist}})
+    print(playlist)
+    return jsonify({'msg' : '플리에 저장됨'})
+
+#Auth
+@app.route('/auth/login')
+def login():
+   return render_template('auth/login.html')
 
 #####Auth#####
 
@@ -65,6 +99,7 @@ def logIn():
 
     return jsonify({'message': msg, 'error': error, 'playlist': playlist})
 
+#SignIn
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
 def getSignIn():
