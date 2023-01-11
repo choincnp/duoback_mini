@@ -44,8 +44,8 @@ def search_get():
    return jsonify({ 'data': str(resData)})
 
 #PlayList
-@app.route('/addList', methods=['POST'])
-def add_list():
+@app.route('/playlist', methods=['POST'])
+def list_post():
     # list data
     sessionId = 'test1'
     title = request.args.get('title')
@@ -60,15 +60,15 @@ def add_list():
         'musicId' : musicId,
         'duration' : duration
     }
-    #find
+    find
     playlist = db.users.find_one({'id': sessionId})['list']
     playlist.append(musicInfo)
     newPlaylist = playlist
     db.users.update_one({'id': sessionId}, {'$set': {'list': newPlaylist}})
-    return jsonify({'msg' : '플리에 저장됨'})
+    return jsonify({"msg": '완료'})
 
-@app.route('/addList', methods=['GET'])
-def show_list():
+@app.route('/playlist', methods=['GET'])
+def list_get():
     #DB에서 정보를 가져옴
     playlist = db.users.find_one({'id': 'test1'})['list']
     return jsonify({'playlist' : playlist})

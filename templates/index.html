@@ -13,18 +13,13 @@
         $('.temp').empty();
         $.ajax({
           type: 'GET',
-          url: '/',
+          url: '/playlist',
           data: {},
           success: function (response) {
-            for (let i = 0; i < response.length; i++) {
-              const thumbnail = response[i]['thumbnail'];
-              const title = response[i]['title'];
-              const id = response[i]['id'];
-              const owner = response[i]['owner'];
-              const duration = response[i]['duration'];
-              const temp_html = `
-              `;
-              $('.music').append(temp_html);
+            for (let i of response) {
+              const { thumbnail, channelUrl, duration, id, owner } = musicData;
+              const component = `${title}`;
+              $('.user-playlist').append(component);
             }
           },
         });
@@ -57,16 +52,19 @@
           owner: owner,
           duration: duration,
         };
+        console.log(0);
 
         $.ajax({
           type: 'POST',
-          url: '/addList',
+          url: '/playlist',
           data: { musicData: musicData },
           success: function (response) {
+            console.log(1);
+            console.log(response);
             /*
             1. res에서 BE가 던져준 새 플리 변수 저장.
             2. 플리 비우기
-            3. 새로 받아온 데이터로 플리 렌더링
+            3. 새로 
             */
           },
         });
