@@ -10,25 +10,26 @@
           }
     </style>
     <script>
-      /*
-        const getReq = () => {
-          $.ajax({
-            type: 'GET', //Method
-            url: '/test', //URL
-            data: {},
-            success: function (response) {
-              console.log(response);
-            },
-          });
-        };
-      */
+      const getplaylist =() => {
+        $.ajax({
+          type:'GET',
+          url:'/',
+          data:{},
+          success:function(response){
+
+          }
+        });
+      };
       const addplaylist =() => {
         const title = $('.temp')['title']
         const thumbnail = $('.temp')['thumbnails']
+        const id = $('.temp')['id']
+        const owner = $('.temp')['owner']
+        const duration = $('.temp')['duration']
         $.ajax({
               type:'POST',
               url:'/addList',
-              data:{'title_give' : title, 'thumbnail_give' : thumbnail },
+              data:{'title_give' : title, 'thumbnail_give' : thumbnail, 'id_give' : id, 'owner_give':owner, 'duration_give':duration },
               success:function(response){
                 alert(response['msg']);
               }
@@ -41,17 +42,26 @@
           url: '/search',
           data: { query: query },
           success: function (response) {
-            const { data: HTMLData } = response;
+            const {data: HTMLData} = response;
             const musicDatas = musicDataParser(HTMLData);
-            for (let i = 0; i < 5 ; i++){
-            let thumbnails = musicDatas[i].thumbnail
-            let title = musicDatas[i].title
-            let temp_html = `<div id = 'temp'><img src = "${thumbnails}" alt = '검색어에 대한 사진 설명입니다.'>
-                             <button style="border-radius: 7px;" onclick = 'addplaylist()'> Post music data </button>
-                                  <button onclick="clean()">clean</button>
-                                <h5 style="color: midnightblue">${title}</h5></div>`
-            $('.video-container').append(temp_html)
-              console.log(thumbnails,title)
+            for (let i = 0; i < 5; i++) {
+              let thumbnails = musicDatas[i].thumbnail
+              let title = musicDatas[i].title
+              let id = musicDatas[i].id
+              let num = i
+              let owner = musicDatas[i].owner
+              let duration = musicDatas[i].duration
+              let temp_html = `<span id="temp">
+                               <img id = 'thumb' src = "${thumbnails}" alt = '검색어에 대한 사진 설명입니다.'><br>
+                              <button style="border-radius: 7px;" onclick = 'addplaylist()'> Post music data </button><br>
+                              <a id = 'aid'>${id}</a><br>
+                              <a id ='num'>${num}<br>
+                              <a id = 'owner'>${owner}</a><br>
+                              <a id = 'duration'>${duration}</a><br>
+                              <button onclick= 'clean()'>clean</button>
+                              <a id = 'title' style="color: midnightblue">${title}</a>
+                              </span>`
+              $('.video-container').append(temp_html)
             }
           },
         });

@@ -47,19 +47,30 @@ def search_get():
 @app.route('/addList', methods=['POST'])
 def add_list():
     # list data
-    sessionId = 'test'
-    count = list(db.users.find({'id': sessionId}, {'_id': False}))
-    num = len(count) + 1
+    sessionId = 'test1'
     title = request.args.get('title_give')
     thumbnail = request.args.get('thumbnail_give')
-    owner = '나도모름'
-    id = 'w9JE8b-84UI'
-    duration = '1분55초'
-    playlist = [num, title, thumbnail, owner, id, duration]
-    #update into database
-    db.users.update_one({'id': sessionId}, {'$set': {'list': playlist}})
-    print(playlist)
+    owner = request.args.get('owner_give')
+    id = request.args.get('id_give')
+    duration = request.args.get('thumbnail_give')
+    musicInfo = {
+        'title' :title,
+        'thumbnail' : thumbnail,
+        'owner' : owner,
+        'id' : id,
+        'duration' : duration
+    }
+    #find
+    playlist = db.users.find_one({'id': sessionId})['list']
+    playlist.append(musicInfo)
+    newPlaylist = playlist
+    db.users.update_one({'id': sessionId}, {'$set': {'list': newPlaylist}})
     return jsonify({'msg' : '플리에 저장됨'})
+
+@app.route('/addList', methods='GET')
+def show_list():
+    #DB에서 정보를 가져옴
+    return jsonify()
 
 #Auth
 @app.route('/auth/login')
@@ -97,7 +108,6 @@ def logIn():
         playlist = db.users.find_one({'id': user_id})['playlist']
     return jsonify({'message': msg, 'error': error, 'playlist': playlist})
 
-#SignIn
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
 def getSignIn():
