@@ -7,7 +7,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="../static/js/dataTrimmer.js"></script>
     <script src="../static/js/musicDataParser.js"></script>
+
     <script>
+      const getplaylist =() => {
+        $.ajax({
+          type:'GET',
+          url:'/',
+          data:{},
+          success:function(response){
+
+          }
+        });
+      };
+      const addplaylist =() => {
+        const title = $('.temp')['title']
+        const thumbnail = $('.temp')['thumbnails']
+        const id = $('.temp')['id']
+        const owner = $('.temp')['owner']
+        const duration = $('.temp')['duration']
+        $.ajax({
+              type:'POST',
+              url:'/addList',
+              data:{'title_give' : title, 'thumbnail_give' : thumbnail, 'id_give' : id, 'owner_give':owner, 'duration_give':duration },
+              success:function(response){
+                alert(response['msg']);
+              }
+          });
+      };
       const getMusic = () => {
         const query = $('.searchInput').val();
         $.ajax({
@@ -19,7 +45,6 @@
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
             for (let i of musicDatas) {
-              console.log(i);
               const { title, thumbnails, channelUrl, duration, id, owner } = i;
               const musicComponent = createMusicComponent(i);
               console.log(thumbnails);
@@ -28,7 +53,6 @@
           },
         });
       };
-
       const createMusicComponent = (musicData) => {
         const { title, thumbnail, channelUrl, duration, id, owner } = musicData;
 
@@ -49,7 +73,6 @@
       };
 
       const clearList = () => {
-        console.log('clear');
         $('.search_result-container').empty();
       };
     </script>
