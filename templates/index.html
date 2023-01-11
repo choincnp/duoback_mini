@@ -5,12 +5,51 @@
     <title>Title</title>
     <link rel="stylesheet" href="../static/css/index.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-      .box {
-        background-color: gray;
-      }
-    </style>
+    <script src="../static/js/dataTrimmer.js"></script>
+    <script src="../static/js/musicDataParser.js"></script>
+
     <script>
+      const getplaylist = () => {
+        $('.temp').empty();
+        $.ajax({
+          type: 'GET',
+          url: '/',
+          data: {},
+          success: function (response) {
+            for (let i = 0; i < response.length; i++) {
+              const thumbnail = response[i]['thumbnail'];
+              const title = response[i]['title'];
+              const id = response[i]['id'];
+              const owner = response[i]['owner'];
+              const duration = response[i]['duration'];
+              const temp_html = `
+              `;
+              $('.music').append(temp_html);
+            }
+          },
+        });
+      };
+      const addplaylist = () => {
+        const title = $('.temp')['title'];
+        const thumbnail = $('.temp')['thumbnails'];
+        const id = $('.temp')['id'];
+        const owner = $('.temp')['owner'];
+        const duration = $('.temp')['duration'];
+        $.ajax({
+          type: 'POST',
+          url: '/addList',
+          data: {
+            title_give: title,
+            thumbnail_give: thumbnail,
+            id_give: id,
+            owner_give: owner,
+            duration_give: duration,
+          },
+          success: function (response) {
+            alert(response['msg']);
+          },
+        });
+      };
       const getMusic = () => {
         const query = $('.searchInput').val();
         $.ajax({
@@ -22,10 +61,8 @@
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
             for (let i of musicDatas) {
-              console.log(i);
               const { title, thumbnails, channelUrl, duration, id, owner } = i;
               const musicComponent = createMusicComponent(i);
-              console.log(thumbnails);
               $('.search_result-container').append(musicComponent);
             }
           },
@@ -34,12 +71,11 @@
 
       const createMusicComponent = (musicData) => {
         const { title, thumbnail, channelUrl, duration, id, owner } = musicData;
-
         return `
             <div class="music-card">
               <img src="${thumbnail}" class="music-img"/>
               <div class="music-info">
-                <div>${title}</div>
+                <div class="music-title">${title}</div>
               </div>
             </div>
         `;
@@ -52,7 +88,6 @@
       };
 
       const clearList = () => {
-        console.log('clear');
         $('.search_result-container').empty();
       };
     </script>
@@ -68,20 +103,19 @@
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen
         ></iframe>
-        <div class="user-playlist">123</div>
+        <div class="user-playlist"></div>
       </div>
       <div class="right-content">
         <div class="search-container">
           <input class="searchInput" placeholder="Search To play" type="text" />
           <svg
             onclick="getMusic()"
-            class="searchBtn"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-6 h-6"
+            class="w-6 h-6 searchBtn"
           >
             <path
               stroke-linecap="round"
@@ -90,7 +124,6 @@
             />
           </svg>
         </div>
-
         <div class="search_result-container"></div>
       </div>
     </div>
