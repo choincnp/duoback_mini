@@ -2,7 +2,7 @@ from flask import Flask, session, render_template, request, jsonify
 from bs4 import BeautifulSoup
 import requests
 from pymongo import MongoClient
-client = MongoClient('')
+client = MongoClient('mongodb+srv://test:sparta@Cluster0.elmvpjv.mongodb.net/?retryWrites=true&w=majority')
 db = client.dbsparta
 app = Flask(__name__)
 app.secret_key="My_key"
@@ -67,10 +67,11 @@ def add_list():
     db.users.update_one({'id': sessionId}, {'$set': {'list': newPlaylist}})
     return jsonify({'msg' : '플리에 저장됨'})
 
-@app.route('/addList', methods='GET')
+@app.route('/addList', methods=['GET'])
 def show_list():
     #DB에서 정보를 가져옴
-    return jsonify()
+    playlist = db.users.find_one({'id': 'test1'})['list']
+    return jsonify({'playlist' : playlist})
 
 #Auth
 @app.route('/auth/login')

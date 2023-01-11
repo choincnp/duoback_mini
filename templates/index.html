@@ -10,12 +10,22 @@
 
     <script>
       const getplaylist =() => {
+        $('.temp').empty()
         $.ajax({
           type:'GET',
           url:'/',
           data:{},
           success:function(response){
-
+            for (let i=0; i<response.length; i++){
+              const thumbnail = response[i]['thumbnail']
+              const title = response[i]['title']
+              const id = response[i]['id']
+              const owner = response[i]['owner']
+              const duration = response[i]['duration']
+              const temp_html = `
+              `
+              $('.music').append(temp_html)
+            }
           }
         });
       };
@@ -47,7 +57,6 @@
             for (let i of musicDatas) {
               const { title, thumbnails, channelUrl, duration, id, owner } = i;
               const musicComponent = createMusicComponent(i);
-              console.log(thumbnails);
               $('.search_result-container').append(musicComponent);
             }
           },
@@ -55,7 +64,6 @@
       };
       const createMusicComponent = (musicData) => {
         const { title, thumbnail, channelUrl, duration, id, owner } = musicData;
-
         return `
             <div class="music-card">
               <img src="${thumbnail}" class="music-img"/>
@@ -95,13 +103,12 @@
           <input class="searchInput" placeholder="Search To play" type="text" />
           <svg
             onclick="getMusic()"
-            class="searchBtn"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-6 h-6"
+            class="w-6 h-6 searchBtn"
           >
             <path
               stroke-linecap="round"
