@@ -2,9 +2,7 @@ from flask import Flask, session, render_template, request, jsonify
 from bs4 import BeautifulSoup
 import requests
 from pymongo import MongoClient
-import certifi
-ca = certifi.where()
-client = MongoClient('mongodb+srv://test:sparta@cluster0.1sichzk.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
+client = MongoClient('mongodb+srv://test:sparta@cluster0.1sichzk.mongodb.net/?retryWrites=true&w=majority')
 db = client.dbsparta
 app = Flask(__name__)
 app.secret_key = "Mykey"
@@ -157,5 +155,5 @@ def signIn():
     return jsonify({'message': msg, 'error': error})
 
 if __name__ == '__main__':
-   app.run('0.0.0.0',port=5003,debug=True)
+   app.run('0.0.0.0',port=5000,debug=True)
 
