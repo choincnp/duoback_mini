@@ -52,11 +52,18 @@
           owner: owner,
           duration: duration,
         };
+        console.log('getLogspy', musicData);
 
         $.ajax({
           type: 'POST',
           url: '/playlist',
-          data: { musicData: musicData },
+          data: {
+            id: id,
+            thumbnail: thumbnail,
+            title: title,
+            owner: owner,
+            duration: duration,
+          },
           success: function (response) {
             const { playlistData } = response;
             console.log(typeof playlistData, playlistData);

@@ -2,14 +2,15 @@ from flask import Flask, session, render_template, request, jsonify
 from bs4 import BeautifulSoup
 import requests
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://test:sparta@Cluster0.elmvpjv.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://test:sparta@cluster0.1sichzk.mongodb.net/?retryWrites=true&w=majority')
 db = client.dbsparta
 app = Flask(__name__)
-app.secret_key="My_key"
+app.secret_key = "Mykey"
 
+sessionId = 0
 
 # API
-# CONSTANT 
+# CONSTANT
 REQ = {
     'KEY': 'User-Agent',
     'VALUE': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
@@ -21,18 +22,17 @@ def getHTMLData(query):
     soup = BeautifulSoup(data.text, 'html.parser')
     return soup
 
-def parseData():
-  result = [];
-
-#Server
-app = Flask(__name__)
-
-def checkSession():
+#Sessions
+def checkSessionValidation():
   if session['id']:
-    global sessionId
+    global sessionId;
     sessionId = session['id']
     return
   return render_template('/auth/login.html')
+
+
+#Server
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -41,8 +41,10 @@ def home():
         # sessionId = session['id']
         # print(session['id'])
         global sessionId
+        print(sessionId)
         return render_template('index.html')
     else:
+        print(sessionId)
         return render_template('/auth/login.html')
 
 # session 오류 해결하려고 입력
@@ -53,7 +55,6 @@ if __name__ == "__main__":
 
 @app.route('/search', methods=['GET'])
 def search_get():
-   checkSession()
    query = request.args.get('query')
    HTMLData = getHTMLData(query)
    resData = list(HTMLData)[1];
@@ -62,14 +63,14 @@ def search_get():
 #PlayList
 @app.route('/playlist', methods=['POST'])
 def list_post():
-    checkSession()
+    checkSessionValidation()
     # list data
-    sessionId = 'test1'
-    title = request.args.get('title')
-    thumbnail = request.args.get('thumbnail')
-    owner = request.args.get('owner')
-    musicId = request.args.get('id')
-    duration = request.args.get('duration')
+    global sessionId
+    title = request.form['title']
+    thumbnail = request.form['thumbnail']
+    owner = request.form['owner']
+    musicId = request.form['id']
+    duration = request.form['duration']
     musicInfo = {
         'title' :title,
         'thumbnail' : thumbnail,
@@ -84,26 +85,32 @@ def list_post():
 
     # 몽고db에서 플레이리스트 꺼내기
     allPlaylist = db.users.find_one({'id':sessionId})['playlist']
+
     return jsonify({"playlistData": allPlaylist})
 
 @app.route('/playlist', methods=['GET'])
 def list_get():
-    checkSession()
+    checkSessionValidation()
     #DB에서 정보를 가져옴
     playlist = db.users.find_one({'id': 'test1'})['list']
     return jsonify({'playlist' : playlist})
+
+#Auth
+@app.route('/auth/login')
+def login():
+   return render_template('auth/login.html')
 
 #####Auth#####
 
 #LogIn
 @app.route('/auth/login', methods=['GET'])
 def getlogIn():
-   checkSession()
+   checkSessionValidation()
    return render_template('auth/login.html')
 
 @app.route('/auth/login', methods=['POST'])
 def logIn():
-    checkSession()
+    checkSessionValidation()
     user_id = request.form['inputId']
     user_pw = request.form['inputPw']
     error = True
@@ -123,7 +130,6 @@ def logIn():
     else:
         msg = "로그인 성공"
         error = False  # 로그인 가능
-
         session['id'] = user_id
         global sessionId
         sessionId = user_id
@@ -133,19 +139,19 @@ def logIn():
 #Logout
 @app.route('/logout', methods=['GET'])
 def logout():
-    checkSession()
+    checkSessionValidation()
     session.pop('id', None)
     return jsonify({'message': "로그아웃."})
 
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
 def getSignIn():
-   checkSession()
+   checkSessionValidation()
    return render_template('auth/signIn.html')
 
 @app.route('/auth/signIn', methods=['POST'])
 def signIn():
-    checkSession()
+    checkSessionValidation()
     inputId = request.form['inputId']
     inputPw = request.form['inputPw']
     error = True
@@ -163,7 +169,10 @@ def signIn():
         msg = "회원가입 완료!"
         error = False
         db.users.insert_one({'id': inputId, 'pw': inputPw, 'playlist': []})
+
+
     return jsonify({'message': msg, 'error': error})
 
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5000,debug=True)
+
