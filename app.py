@@ -42,8 +42,28 @@ def getlogIn():
 
 @app.route('/auth/login', methods=['POST'])
 def logIn():
-  #코드 구현하시면 됩니다.
-   return jsonify({ 'data': 'test'})
+    user_id = request.form['inputId']
+    user_pw = request.form['inputPw']
+    error = True
+    playlist = 0
+
+    # 유효성 검사 (빈문자열, 4자리 미만, ID 존재여부 -> 존재하면 PW 일치 확인)
+    if (len(user_id.strip()) == 0):
+        msg = "ID를 입력해 주세요."
+    elif (len(user_pw.strip()) == 0):
+        msg = "PW를 입력해 주세요."
+    elif (len(user_id) < 4 or len(user_pw) < 4):
+        msg = "ID와 PW의 길이는 4자가 넘어야 합니다."
+    elif (db.users.find_one({'id': user_id}) == None):  # 등록되지 않은 ID
+        msg = "등록되지 않은 ID입니다. 회원가입 하세요."
+    elif (db.users.find_one({'id': user_id})['pw'] != user_pw):  # ID, PW 일치 확인
+        msg = "ID와 PW가 일치하지 않습니다. 다시 확인해보세요."
+    else:
+        msg = "로그인 성공"
+        error = False  # 로그인 가능
+        playlist = db.users.find_one({'id': user_id})['playlist']
+
+    return jsonify({'message': msg, 'error': error, 'playlist': playlist})
 
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
@@ -73,4 +93,4 @@ def signIn():
     return jsonify({'errorMessage': msg, 'error': error})
 
 if __name__ == '__main__':
-   app.run('0.0.0.0',port=5000,debug=True)
+   app.run('0.0.0.0',port=5001,debug=True)
