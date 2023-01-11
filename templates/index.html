@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>Title</title>
+    <link rel="stylesheet" href="../static/css/index.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-          .box{
-              background-color: gray;
-          }
-    </style>
+    <script src="../static/js/dataTrimmer.js"></script>
+    <script src="../static/js/musicDataParser.js"></script>
+
     <script>
       const getplaylist =() => {
         $.ajax({
@@ -42,57 +41,78 @@
           url: '/search',
           data: { query: query },
           success: function (response) {
-            const {data: HTMLData} = response;
+            clearList();
+            const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
-            for (let i = 0; i < 5; i++) {
-              let thumbnails = musicDatas[i].thumbnail
-              let title = musicDatas[i].title
-              let id = musicDatas[i].id
-              let num = i
-              let owner = musicDatas[i].owner
-              let duration = musicDatas[i].duration
-              let temp_html = `<span id="temp">
-                               <img id = 'thumb' src = "${thumbnails}" alt = '검색어에 대한 사진 설명입니다.'><br>
-                              <button style="border-radius: 7px;" onclick = 'addplaylist()'> Post music data </button><br>
-                              <a id = 'aid'>${id}</a><br>
-                              <a id ='num'>${num}<br>
-                              <a id = 'owner'>${owner}</a><br>
-                              <a id = 'duration'>${duration}</a><br>
-                              <button onclick= 'clean()'>clean</button>
-                              <a id = 'title' style="color: midnightblue">${title}</a>
-                              </span>`
-              $('.video-container').append(temp_html)
+            for (let i of musicDatas) {
+              const { title, thumbnails, channelUrl, duration, id, owner } = i;
+              const musicComponent = createMusicComponent(i);
+              console.log(thumbnails);
+              $('.search_result-container').append(musicComponent);
             }
           },
         });
       };
+      const createMusicComponent = (musicData) => {
+        const { title, thumbnail, channelUrl, duration, id, owner } = musicData;
 
-      function clean() {
-          $('.video-container').empty()
-      }
+        return `
+            <div class="music-card">
+              <img src="${thumbnail}" class="music-img"/>
+              <div class="music-info">
+                <div class="music-title">${title}</div>
+              </div>
+            </div>
+        `;
+      };
 
       const createVideo = (id) => {
         return `
-                <iframe height="300" autoplay loop src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="500px" height="350px" autoplay loop src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             `;
+      };
+
+      const clearList = () => {
+        $('.search_result-container').empty();
       };
     </script>
   </head>
   <body>
-  <div id="youtube">
-      <iframe
-      height="300"
-      src="https://www.youtube.com/embed/w9JE8b-84UI?rel=0&autoplay=1;playlist=BYyVDi8BpZw"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen
-    ></iframe>
-  </div>
-    <div class="video-container"></div>
-    <input class="searchInput" placeholder="Search To play" type="text" />
-    <input class="music" onclick="getMusic()" value="search" type="button" value="button" />
+    <div class="main-container">
+      <div class="left-content">
+        <iframe
+          width="500px"
+          height="350px"
+          src="https://www.youtube.com/embed/w9JE8b-84UI"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+        <div class="user-playlist"></div>
+      </div>
+      <div class="right-content">
+        <div class="search-container">
+          <input class="searchInput" placeholder="Search To play" type="text" />
+          <svg
+            onclick="getMusic()"
+            class="searchBtn"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+        </div>
+
+        <div class="search_result-container"></div>
+      </div>
+    </div>
   </body>
-  <script src="../static/js/dataTrimmer.js"></script>
-  <script src="../static/js/musicDataParser.js"></script>
-  <button onclick="add()"></button>
 </html>
