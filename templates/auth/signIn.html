@@ -18,7 +18,6 @@
     ></script>
     <script>
       const signIn = () => {
-        console.log('st');
         const inputId = $('.signIn-id-input').val();
         const inputPw = $('.signIn-pw-input').val();
         $.ajax({
@@ -29,6 +28,16 @@
             const { error, message } = response;
             if (!error) window.location.href = '/auth/login';
             alert(message);
+            if (error) {
+              // 오류
+              alert('에러. \n이유 : ' + message);
+              window.location.reload();
+            } else {
+              // 회원가입 성공
+              alert(message);
+              alert('로그인 화면으로 이동합니다.');
+              window.location.href = '/auth/login';
+            }
           },
         });
       };

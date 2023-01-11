@@ -3,9 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <title>Title</title>
+    <link rel="stylesheet" href="../static/css/index.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../static/js/dataTrimmer.js"></script>
-    <script src="../static/js/musicDataParser.js"></script>
+    <style>
+      .box {
+        background-color: gray;
+      }
+    </style>
     <script>
       const getMusic = () => {
         const query = $('.searchInput').val();
@@ -14,42 +18,81 @@
           url: '/search',
           data: { query: query },
           success: function (response) {
+            clearList();
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
-            for (let i = 0; i < 5 ; i++){
-            let thumbnails = musicDatas[i].thumbnail
-            let title = musicDatas[i].title
-            let temp_html = `<div id = 'temp'><img src = "${thumbnails}" alt = '검색어에 대한 사진 설명입니다.'>
-                             <button style="border-radius: 7px;" onclick = 'musicPost'> Post music data </button>
-                                  <button onclick="clean()">clean</button>
-                                <h5 style="color: midnightblue">${title}</h5></div>`
-            $('.video-container').append(temp_html)
+            for (let i of musicDatas) {
+              console.log(i);
+              const { title, thumbnails, channelUrl, duration, id, owner } = i;
+              const musicComponent = createMusicComponent(i);
+              console.log(thumbnails);
+              $('.search_result-container').append(musicComponent);
             }
           },
         });
       };
 
-      function clean() {
-          $('.video-container').empty()
-      }
+      const createMusicComponent = (musicData) => {
+        const { title, thumbnail, channelUrl, duration, id, owner } = musicData;
+
+        return `
+            <div class="music-card">
+              <img src="${thumbnail}" class="music-img"/>
+              <div class="music-info">
+                <div>${title}</div>
+              </div>
+            </div>
+        `;
+      };
 
       const createVideo = (id) => {
         return `
-                <iframe height="300" autoplay loop src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="500px" height="350px" autoplay loop src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             `;
+      };
+
+      const clearList = () => {
+        console.log('clear');
+        $('.search_result-container').empty();
       };
     </script>
   </head>
   <body>
-    <iframe
-      height="300"
-      src="https://www.youtube.com/embed/w9JE8b-84UI"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen
-    ></iframe>
-    <div class="video-container"></div>
-    <input class="searchInput" placeholder="Search To play" type="text" />
-    <input onclick="getMusic()" value="search" type="button" value="button" />
+    <div class="main-container">
+      <div class="left-content">
+        <iframe
+          width="500px"
+          height="350px"
+          src="https://www.youtube.com/embed/w9JE8b-84UI"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+        <div class="user-playlist">123</div>
+      </div>
+      <div class="right-content">
+        <div class="search-container">
+          <input class="searchInput" placeholder="Search To play" type="text" />
+          <svg
+            onclick="getMusic()"
+            class="searchBtn"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+        </div>
+
+        <div class="search_result-container"></div>
+      </div>
+    </div>
   </body>
 </html>

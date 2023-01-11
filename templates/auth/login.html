@@ -25,7 +25,16 @@
           url: '/auth/login',
           data: { inputId: inputId, inputPw: inputPw },
           success: function (response) {
-            console.log(response);
+            const error = response['error']
+            const message = response['message']
+            const playlist = response['playlist']
+            if(error){    // 에러 발생
+              alert("에러. \n이유 : "+message)
+              window.location.reload()
+            } else{       // 로그인 성공
+              alert(message)
+              window.location.href = '/';
+            }
           },
         });
       };
