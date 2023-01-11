@@ -48,16 +48,16 @@ def search_get():
 def add_list():
     # list data
     sessionId = 'test1'
-    title = request.args.get('title_give')
-    thumbnail = request.args.get('thumbnail_give')
-    owner = request.args.get('owner_give')
-    id = request.args.get('id_give')
-    duration = request.args.get('thumbnail_give')
+    title = request.args.get('title')
+    thumbnail = request.args.get('thumbnail')
+    owner = request.args.get('owner')
+    musicId = request.args.get('id')
+    duration = request.args.get('duration')
     musicInfo = {
         'title' :title,
         'thumbnail' : thumbnail,
         'owner' : owner,
-        'id' : id,
+        'musicId' : musicId,
         'duration' : duration
     }
     #find
