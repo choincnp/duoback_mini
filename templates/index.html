@@ -63,29 +63,23 @@
           owner: owner,
           duration: duration,
         };
+        console.log('getLogspy', musicData);
 
         $.ajax({
           type: 'POST',
           url: '/playlist',
-          data: { 'id': id, 'thumbnail': thumbnail, 'title': title, 'owner': owner, 'duration': duration },
+          data: {
+            id: id,
+            thumbnail: thumbnail,
+            title: title,
+            owner: owner,
+            duration: duration,
+          },
           success: function (response) {
-            const list = response['msg']
-            const listLength = list.length
-            for (let i = 0; i < listLength; i++) {
-              const duration = list[i]['duration']
-              const musicId = list[i]['musicId']
-              const owner = list[i]['owner']
-              const thumbnail = list[i]['thumbnail']
-              const title = list[i]['title']
-              const temp_html = `<div>
-                                    <img src=${thumbnail}/>
-                                  <div>
-                                    <p>${title}</p>
-                                    <p>${duration}</p>
-                                    <p>${owner}</p>
-                                  </div>
-                                </div>`
-              $('.user-playlist').append(temp_html)
+            const { playlistData } = response;
+            for (let i of playlistData) {
+              const list = createListComponent(i);
+              $('.user-playlist').append(list);
             }
             /*
             1. res에서 BE가 던져준 새 플리 변수 저장.
@@ -94,6 +88,19 @@
             */
           },
         });
+      };
+
+      const createListComponent = (props) => {
+        const { title, thumbnail, duration, musicId: id, owner } = props;
+
+        return `
+            <div class='list-card'">
+              <img src='${thumbnail}' class='list-img'/>
+              <div class='list-info'>
+                <div class='list-title'>${title}</div>
+              </div>
+            </div>
+        `;
       };
 
       const createMusicComponent = (musicData) => {
