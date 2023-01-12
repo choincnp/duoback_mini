@@ -22,8 +22,14 @@ def getHTMLData(query):
     soup = BeautifulSoup(data.text, 'html.parser')
     return soup
 
-def parseData():
-  result = [];
+#Sessions
+def checkSessionValidation():
+  if session['id']:
+    global sessionId;
+    sessionId = session['id']
+    return
+  return render_template('/auth/login.html')
+
 
 #Server
 app = Flask(__name__)
@@ -57,6 +63,7 @@ def search_get():
 #PlayList
 @app.route('/playlist', methods=['POST'])
 def list_post():
+    checkSessionValidation()
     # list data
     global sessionId
     title = request.form['title']
@@ -79,18 +86,15 @@ def list_post():
     # 몽고db에서 플레이리스트 꺼내기
     allPlaylist = db.users.find_one({'id':sessionId})['playlist']
 
-    return jsonify({"msg": allPlaylist})
+    return jsonify({"playlistData": allPlaylist})
 
 @app.route('/playlist', methods=['GET'])
 def list_get():
-    #DB에서 정보를 가져옴
-    playlist = db.users.find_one({'id': 'test1'})['list']
-    return jsonify({'playlist' : playlist})
+    # 몽고db에서 플레이리스트 꺼내기
+    global sessionId
+    allPlaylist = db.users.find_one({'id':sessionId})['playlist']
 
-#Auth
-@app.route('/auth/login')
-def login():
-   return render_template('auth/login.html')
+    return jsonify({"playlistData": allPlaylist})
 
 #####Auth#####
 

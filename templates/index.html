@@ -9,17 +9,10 @@
     <script src="../static/js/musicDataParser.js"></script>
 
     <script>
-      const logout = () => {
-        $.ajax({
-          type: "GET",
-          url: "/logout",
-          data: {},
-          success: function (response) {
-            alert(response['message'])
-            window.location.href = '/';
-          }
-        })
-      }
+      $(document).ready(function () {
+        getplaylist();
+      });
+
       const getplaylist = () => {
         $('.temp').empty();
         $.ajax({
@@ -27,10 +20,11 @@
           url: '/playlist',
           data: {},
           success: function (response) {
-            for (let i of response) {
-              const { thumbnail, channelUrl, duration, id, owner } = musicData;
-              const component = `${title}`;
-              $('.user-playlist').append(component);
+            const { playlistData } = response;
+
+            for (let i of playlistData) {
+              const list = createListComponent(i);
+              $('.user-playlist').append(list);
             }
           },
         });
@@ -67,33 +61,47 @@
         $.ajax({
           type: 'POST',
           url: '/playlist',
-          data: { 'id': id, 'thumbnail': thumbnail, 'title': title, 'owner': owner, 'duration': duration },
+          data: {
+            id: id,
+            thumbnail: thumbnail,
+            title: title,
+            owner: owner,
+            duration: duration,
+          },
           success: function (response) {
-            const list = response['msg']
-            const listLength = list.length
-            for (let i = 0; i < listLength; i++) {
-              const duration = list[i]['duration']
-              const musicId = list[i]['musicId']
-              const owner = list[i]['owner']
-              const thumbnail = list[i]['thumbnail']
-              const title = list[i]['title']
-              const temp_html = `<div>
-                                    <img src=${thumbnail}/>
-                                  <div>
-                                    <p>${title}</p>
-                                    <p>${duration}</p>
-                                    <p>${owner}</p>
-                                  </div>
-                                </div>`
-              $('.user-playlist').append(temp_html)
+            const { playlistData } = response;
+
+            for (let i of playlistData) {
+              const list = createListComponent(i);
+              $('.user-playlist').append(list);
             }
-            /*
-            1. res에서 BE가 던져준 새 플리 변수 저장.
-            2. 플리 비우기
-            3. 새로
-            */
           },
         });
+      };
+
+      const logout = () => {
+        $.ajax({
+          type: 'GET',
+          url: '/logout',
+          data: {},
+          success: function (response) {
+            alert(response['message']);
+            window.location.href = '/';
+          },
+        });
+      };
+
+      const createListComponent = (props) => {
+        const { title, thumbnail, duration, musicId: id, owner } = props;
+
+        return `
+            <div class='list-card'>
+              <img src='${thumbnail}' class='list-img'/>
+              <div class='list-info'>
+                <div class='list-title'>${title}</div>
+              </div>
+            </div>
+        `;
       };
 
       const createMusicComponent = (musicData) => {
@@ -139,24 +147,45 @@
         <div class="user-playlist"></div>
       </div>
       <div class="right-content">
-        <div class="search-container">
-          <input class="searchInput" placeholder="Search To play" type="text" />
-          <svg
-            onclick="getMusic()"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6 searchBtn"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+        <div class="nav-bar">
+          <div class="logout-btn" onclick="logout()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 searchBtn"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
+              />
+            </svg>
+          </div>
+          <div class="search-container">
+            <input
+              class="searchInput"
+              placeholder="Search To play"
+              type="text"
             />
-          </svg>
-          <button onclick="logout()">logout</button>
+            <svg
+              onclick="getMusic()"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 searchBtn"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+              />
+            </svg>
+          </div>
         </div>
         <div class="search_result-container"></div>
       </div>

@@ -25,16 +25,10 @@
           url: '/auth/login',
           data: { inputId: inputId, inputPw: inputPw },
           success: function (response) {
-            const error = response['error']
-            const message = response['message']
-            const playlist = response['playlist']
-            if(error){    // 에러 발생
-              alert("에러. \n이유 : "+message)
-              window.location.reload()
-            } else{       // 로그인 성공
-              alert(message)
-              window.location.href = '/';
-            }
+            const { error, message, playlist } = response;
+            if (error) return window.location.reload();
+            alert(message);
+            window.location.href = '/';
           },
         });
       };
@@ -67,7 +61,7 @@
           </div>
         </form>
         <div class="button-box">
-          <a href="./auth/signIn" class="login-btn">Sign In</a>
+          <a href="/auth/signIn" class="login-btn">Sign In</a>
           <div class="login-btn" onClick="login()">Log In</div>
         </div>
       </div>
