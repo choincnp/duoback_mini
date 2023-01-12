@@ -50,7 +50,7 @@
           url: '/search',
           data: { query: query },
           success: function (response) {
-            clearList();
+            clearSearchList();
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
             for (let i of musicDatas) {
@@ -109,12 +109,24 @@
         });
       };
 
+      const changeMusic = (id) => {
+        const newVideo = createVideo(id);
+        clearVideo();
+        addVideo(newVideo);
+      };
+
+      const createVideo = (id) => {
+        return `
+                <iframe width='500px' height='350px' autoplay loop src='https://www.youtube.com/embed/${id}' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>
+            `;
+      };
+
       const createListComponent = (props) => {
         const { title, thumbnail, duration, musicId: id, owner } = props;
 
         return `
           <div class="list-main-container">
-            <div class='list-card'>
+            <div class='list-card' onclick="changeMusic('${id}')">
               <img src='${thumbnail}' class='list-img' id="${id}"/>
               <div class='list-info'>
                 <div class='list-title'>${title}</div>
@@ -151,28 +163,36 @@
         `;
       };
 
-      const createVideo = (id) => {
-        return `
-                <iframe width='500px' height='350px' autoplay loop src='https://www.youtube.com/embed/${id}' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>
-            `;
+      const clearSearchList = () => {
+        $('.search_result-container').empty();
       };
 
-      const clearList = () => {
-        $('.search_result-container').empty();
+      const clearPlayList = () => {
+        $('.user-playlist').empty();
+      };
+
+      const clearVideo = () => {
+        $('.video-container').empty();
+      };
+
+      const addVideo = (videoComponent) => {
+        $('.video-container').append(videoComponent);
       };
     </script>
   </head>
   <body>
     <div class="main-container">
       <div class="left-content">
-        <iframe
-          width="500px"
-          height="350px"
-          src="https://www.youtube.com/embed/w9JE8b-84UI"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+        <div class="video-container">
+          <iframe
+            width="500px"
+            height="350px"
+            src="https://www.youtube.com/embed/w9JE8b-84UI"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
         <div class="user-playlist"></div>
       </div>
       <div class="right-content">
