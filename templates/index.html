@@ -13,6 +13,20 @@
         getplaylist();
       });
 
+      /* Auth */
+      const logout = () => {
+        $.ajax({
+          type: 'GET',
+          url: '/logout',
+          data: {},
+          success: function (response) {
+            alert(response['message']);
+            window.location.href = '/';
+          },
+        });
+      };
+
+      /* Playlist */
       const getplaylist = () => {
         $('.temp').empty();
         $.ajax({
@@ -21,7 +35,6 @@
           data: {},
           success: function (response) {
             const { playlistData } = response;
-
             for (let i of playlistData) {
               const list = createListComponent(i);
               $('.user-playlist').append(list);
@@ -37,7 +50,7 @@
           url: '/search',
           data: { query: query },
           success: function (response) {
-            clearList();
+            clearSearchList();
             const { data: HTMLData } = response;
             const musicDatas = musicDataParser(HTMLData);
             for (let i of musicDatas) {
@@ -79,16 +92,33 @@
         });
       };
 
-      const logout = () => {
+      const deleteMusic = (id) => {
         $.ajax({
           type: 'GET',
           url: '/logout',
-          data: {},
+          data: { id: id },
           success: function (response) {
-            alert(response['message']);
-            window.location.href = '/';
+            /*
+            const { playlistData } = response;
+            for (let i of playlistData) {
+              const list = createListComponent(i);
+              $('.user-playlist').append(list);
+            }
+            */
           },
         });
+      };
+
+      const changeMusic = (id) => {
+        const newVideo = createVideo(id);
+        clearVideo();
+        addVideo(newVideo);
+      };
+
+      const createVideo = (id) => {
+        return `
+                <iframe width='500px' height='350px' autoplay loop src='https://www.youtube.com/embed/${id}' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>
+            `;
       };
 
       const createListComponent = (props) => {
@@ -96,7 +126,7 @@
 
         return `
           <div class="list-main-container">
-            <div class='list-card'>
+            <div class='list-card' onclick="changeMusic('${id}')">
               <img src='${thumbnail}' class='list-img' id="${id}"/>
               <div class='list-info'>
                 <div class='list-title'>${title}</div>
@@ -106,7 +136,7 @@
                 </div>
               </div>
             </div>
-            <div class="list-delete">
+            <div onclick="deleteMusic('${id}')" class="list-delete">
                 <svg width="25" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -133,28 +163,36 @@
         `;
       };
 
-      const createVideo = (id) => {
-        return `
-                <iframe width='500px' height='350px' autoplay loop src='https://www.youtube.com/embed/${id}' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>
-            `;
+      const clearSearchList = () => {
+        $('.search_result-container').empty();
       };
 
-      const clearList = () => {
-        $('.search_result-container').empty();
+      const clearPlayList = () => {
+        $('.user-playlist').empty();
+      };
+
+      const clearVideo = () => {
+        $('.video-container').empty();
+      };
+
+      const addVideo = (videoComponent) => {
+        $('.video-container').append(videoComponent);
       };
     </script>
   </head>
   <body>
     <div class="main-container">
       <div class="left-content">
-        <iframe
-          width="500px"
-          height="350px"
-          src="https://www.youtube.com/embed/w9JE8b-84UI"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+        <div class="video-container">
+          <iframe
+            width="500px"
+            height="350px"
+            src="https://www.youtube.com/embed/w9JE8b-84UI"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
         <div class="user-playlist"></div>
       </div>
       <div class="right-content">
