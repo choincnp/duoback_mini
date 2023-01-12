@@ -98,7 +98,7 @@ def list_get():
 @app.route('/playlist', methods=['PUT'])
 def list_update():
     checkSessionValidation()
-    musicId = request.args.get('id')
+    musicId = request.form['id']
     allPlaylist = db.users.find_one({'id':sessionId})['playlist']
     for playlist in allPlaylist:
         if playlist['musicId'] == musicId:
