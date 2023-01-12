@@ -3,13 +3,18 @@
   height: 100vh;
 }
 
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: black;
+}
+
 /* search */
 .search-container {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 10px;
-  background: black;
 }
 
 .searchInput {

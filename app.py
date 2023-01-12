@@ -92,20 +92,18 @@ def list_post():
 def list_get():
     checkSessionValidation()
     #DB에서 정보를 가져옴
-    playlist = db.users.find_one({'id': 'test1'})['list']
-    return jsonify({'playlist' : playlist})
+    allPlaylist = db.users.find_one({'id':sessionId})['playlist']
+    return jsonify({"playlistData": allPlaylist})
 
 #####Auth#####
 
 #LogIn
 @app.route('/auth/login', methods=['GET'])
 def getlogIn():
-   checkSessionValidation()
    return render_template('auth/login.html')
 
 @app.route('/auth/login', methods=['POST'])
 def logIn():
-    checkSessionValidation()
     user_id = request.form['inputId']
     user_pw = request.form['inputPw']
     error = True
@@ -134,19 +132,16 @@ def logIn():
 #Logout
 @app.route('/logout', methods=['GET'])
 def logout():
-    checkSessionValidation()
     session.pop('id', None)
     return jsonify({'message': "로그아웃."})
 
 #SignIn
 @app.route('/auth/signIn', methods=['GET'])
 def getSignIn():
-   checkSessionValidation()
    return render_template('auth/signIn.html')
 
 @app.route('/auth/signIn', methods=['POST'])
 def signIn():
-    checkSessionValidation()
     inputId = request.form['inputId']
     inputPw = request.form['inputPw']
     error = True
