@@ -1,6 +1,6 @@
 # 붉은 영상 재생기
 ---
-![](https://github.com/choincnp/duoback_mini/issues/23#issue-1530632222)
+![frame](https://user-images.githubusercontent.com/108874833/212066873-5e61e8a9-78e2-4dba-b5bc-f6e5b33075ae.jpg)
 > 2023.1.9 ~ 2023.1.12
 ## Stack
 * HTML
@@ -17,7 +17,7 @@
 ---
 
 ## HOME
-![](https://github.com/choincnp/duoback_mini/issues/24#issue-1530632858)
+![home](https://user-images.githubusercontent.com/108874833/212066720-bf377567-fccc-430d-aecb-87bb52cd3ffa.png)
 ### you have to sign in without having any ID/PW
 
 
