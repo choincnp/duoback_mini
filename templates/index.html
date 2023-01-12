@@ -83,6 +83,7 @@
           },
           success: function (response) {
             const { playlistData } = response;
+            clearPlayList();
 
             for (let i of playlistData) {
               const list = createListComponent(i);
@@ -181,7 +182,6 @@
 
       const getLogSpy = () => {
         const myVideo = $('.myVideo');
-        console.log(myVideo);
       };
     </script>
   </head>
@@ -205,7 +205,6 @@
       </div>
       <div class="right-content">
         <div class="nav-bar">
-          <div onClick="getLogSpy()">logSpy</div>
           <div class="logout-btn" onclick="logout()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
