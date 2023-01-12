@@ -1,5 +1,28 @@
-# 기능명세서
+# 붉은 영상 재생기
+---
+![](https://github.com/choincnp/duoback_mini/issues/23#issue-1530632222)
+> 2023.1.9 ~ 2023.1.12
+## Stack
+* HTML
+* CSS
+* Python
+* VanillaJS
+* JQuery
+---
+## TEAMMATES
+| 곽승민 | 김대현 | 조영준 | 한승현 |
+|---|---|---|---|
+| FE | FE | BE | BE |
 
+---
+
+## HOME
+![](https://github.com/choincnp/duoback_mini/issues/24#issue-1530632858)
+### you have to sign in without having any ID/PW
+
+
+---
+# 기능명세서
 ---
 
 ## 검색 API 구현
