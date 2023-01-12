@@ -94,8 +94,8 @@
 
       const deleteMusic = (id) => {
         $.ajax({
-          type: 'GET',
-          url: '/logout',
+          type: 'PUT',
+          url: '/playlist',
           data: { id: id },
           success: function (response) {
             /*
