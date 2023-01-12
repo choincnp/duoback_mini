@@ -62,6 +62,7 @@
 .left-content {
   width: 500px;
   height: 100%;
+  background: black;
 }
 
 .search_result-container {
@@ -135,7 +136,7 @@
 
 .user-playlist {
   margin-top: -2px;
-  height: calc(100% - 380px);
+  height: calc(100% - 370px);
   overflow-y: auto;
   background: black;
   padding: 10px 0px 10px 10px;
