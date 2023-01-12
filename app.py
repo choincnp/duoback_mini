@@ -95,6 +95,17 @@ def list_get():
     allPlaylist = db.users.find_one({'id':sessionId})['playlist']
     return jsonify({"playlistData": allPlaylist})
 
+@app.route('/playlist', methods=['PUT'])
+def list_update():
+    checkSessionValidation()
+    musicId = request.args.get('id')
+    allPlaylist = db.users.find_one({'id':sessionId})['playlist']
+    for playlist in allPlaylist:
+        if playlist['musicId'] == musicId:
+            allPlaylist.remove(playlist)
+    db.users.update_one({'id': sessionId}, {'$set': {'playlist': allPlaylist}})
+    return jsonify({"playlistData": allPlaylist})
+
 #####Auth#####
 
 #LogIn
@@ -159,7 +170,6 @@ def signIn():
         msg = "회원가입 완료!"
         error = False
         db.users.insert_one({'id': inputId, 'pw': inputPw, 'playlist': []})
-
 
     return jsonify({'message': msg, 'error': error})
 
